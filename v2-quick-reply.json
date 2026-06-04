@@ -1,0 +1,94 @@
+{
+  "name": "v2-quick-reply",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "43b03e8c-24f1-4e38-80af-250a6a793885",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -96,
+        -96
+      ],
+      "id": "c16f742e-bead-4cc8-9fee-da551a35e0c8",
+      "name": "Webhook",
+      "webhookId": "43b03e8c-24f1-4e38-80af-250a6a793885"
+    },
+    {
+      "parameters": {
+        "jsCode": "const LINE_CHANNEL_ACCESS_TOKEN = 'LINE_CHANNEL_ACCESS_TOKEN_HERE';\nreturn { LINE_CHANNEL_ACCESS_TOKEN };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        128,
+        -96
+      ],
+      "id": "fc76f7d8-a103-4da3-b9a5-2eeb41168db3",
+      "name": "line-token"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/reply",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n \"Content-Type\": \"application/json\",\n \"Authorization\": \"Bearer {{ $('line-token').item.json.LINE_CHANNEL_ACCESS_TOKEN }}\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"replyToken\": \"{{ $('Webhook').item.json.body.events[0].replyToken }}\",\n  \"messages\": [\n    {\n      \"type\": \"textV2\",\n      \"text\": \"echo : {{ $('Webhook').item.json.body.events[0].message.text }}\",\n      \"quickReply\": {\n        \"items\": [\n          {\n            \"type\": \"action\",\n            \"imageUrl\": \"https://example.com/sushi.png\",\n            \"action\": {\n              \"type\": \"message\",\n              \"label\": \"Sushi\",\n              \"text\": \"Sushi\"\n            }\n          },\n          {\n            \"type\": \"action\",\n            \"action\": {\n              \"type\": \"camera\",\n              \"label\": \"camera\"\n            }\n          },\n          {\n            \"type\": \"action\",\n            \"action\": {\n              \"type\": \"location\",\n              \"label\": \"Send location\"\n            }\n          }\n        ]\n      }\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        352,
+        -96
+      ],
+      "id": "9ddfea40-87e5-4dc2-9fce-8c23ecebf2e8",
+      "name": "Quick Reply"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "line-token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "line-token": {
+      "main": [
+        [
+          {
+            "node": "Quick Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "019924fb-5f69-4143-9c1c-c212ad3dccd4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "648872ea17eaeb9fc2c4e9a3d995d20f2626232eb86abd146059edbce0d5ec77"
+  },
+  "nodeGroups": [],
+  "id": "ZIbzUxlpCCinHhKB",
+  "tags": []
+}

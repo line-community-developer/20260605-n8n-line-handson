@@ -1,0 +1,93 @@
+{
+  "name": "v1-echo",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "02c2481f-afc6-40d0-a816-18ab42cca8ec",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -96,
+        -96
+      ],
+      "id": "452bb363-b504-41da-bcc6-f5a3bf069a20",
+      "name": "Webhook",
+      "webhookId": "02c2481f-afc6-40d0-a816-18ab42cca8ec"
+    },
+    {
+      "parameters": {
+        "jsCode": "const LINE_CHANNEL_ACCESS_TOKEN = 'LINE_CHANNEL_ACCESS_TOKEN_HERE';\nreturn { LINE_CHANNEL_ACCESS_TOKEN };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        128,
+        -96
+      ],
+      "id": "74365983-62c3-4b92-a44f-ec1e65b1426a",
+      "name": "line-token"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/reply",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n \"Content-Type\": \"application/json\",\n \"Authorization\": \"Bearer {{ $('line-token').item.json.LINE_CHANNEL_ACCESS_TOKEN }}\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"replyToken\": \"{{ $('Webhook').item.json.body.events[0].replyToken }}\",\n    \"messages\":[\n        {\n            \"type\": \"textV2\",\n            \"text\": \"echo : {{ $('Webhook').item.json.body.events[0].message.text }}\"\n        }\n    ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        352,
+        -96
+      ],
+      "id": "9fe17dc1-a0a7-4409-98da-042b0b68c86d",
+      "name": "Echo"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "line-token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "line-token": {
+      "main": [
+        [
+          {
+            "node": "Echo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "de17440f-77dd-4c99-a017-a023729bd73c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "648872ea17eaeb9fc2c4e9a3d995d20f2626232eb86abd146059edbce0d5ec77"
+  },
+  "nodeGroups": [],
+  "id": "uMsqWA1UiYHAhOKD",
+  "tags": []
+}

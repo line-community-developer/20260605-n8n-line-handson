@@ -1,0 +1,94 @@
+{
+  "name": "v3-flex-message",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "27ffead4-24ab-426e-9c7b-deb72c1de4a9",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -96,
+        -96
+      ],
+      "id": "dcf90bda-726e-4f4e-920c-8d9a48b45b04",
+      "name": "Webhook",
+      "webhookId": "27ffead4-24ab-426e-9c7b-deb72c1de4a9"
+    },
+    {
+      "parameters": {
+        "jsCode": "const LINE_CHANNEL_ACCESS_TOKEN = 'LINE_CHANNEL_ACCESS_TOKEN_HERE';\nreturn { LINE_CHANNEL_ACCESS_TOKEN };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        128,
+        -96
+      ],
+      "id": "e2379de5-c3c0-40cd-9949-6c31fcada224",
+      "name": "line-token"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/reply",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n \"Content-Type\": \"application/json\",\n \"Authorization\": \"Bearer {{ $('line-token').item.json.LINE_CHANNEL_ACCESS_TOKEN }}\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"replyToken\": \"{{ $('Webhook').item.json.body.events[0].replyToken }}\",\n  \"messages\": [\n    {\n      \"type\": \"flex\",\n      \"altText\": \"This is a flex message\",\n      \"contents\": {\n        \"type\": \"bubble\",\n        \"header\": {\n          \"type\": \"box\",\n          \"layout\": \"vertical\",\n          \"contents\": [\n            {\n              \"type\": \"text\",\n              \"text\": \"Flex Message Corp\",\n              \"color\": \"#FFFFFF\",\n              \"weight\": \"bold\"\n            }\n          ]\n        },\n        \"hero\": {\n          \"type\": \"image\",\n          \"url\": \"https://developers.line.biz/media/messaging-api/using-flex-message-simulator/mary.png\",\n          \"size\": \"xl\"\n        },\n        \"body\": {\n          \"type\": \"box\",\n          \"layout\": \"vertical\",\n          \"contents\": [\n            {\n              \"type\": \"text\",\n              \"text\": \"田中花子\",\n              \"size\": \"xl\",\n              \"weight\": \"bold\",\n              \"align\": \"center\"\n            },\n            {\n              \"type\": \"text\",\n              \"text\": \"Flex Message Corp CEO\",\n              \"align\": \"center\"\n            },\n            {\n              \"type\": \"separator\",\n              \"margin\": \"md\"\n            },\n            {\n              \"type\": \"box\",\n              \"layout\": \"vertical\",\n              \"contents\": [\n                {\n                  \"type\": \"button\",\n                  \"action\": {\n                    \"type\": \"uri\",\n                    \"label\": \"Flex Message Corp 公式サイト\",\n                    \"uri\": \"https://example.com\"\n                  },\n                  \"style\": \"link\"\n                },\n                {\n                  \"type\": \"button\",\n                  \"action\": {\n                    \"type\": \"uri\",\n                    \"label\": \"利用者登録する\",\n                    \"uri\": \"https://liff.line.me/xxxxx-xxxxx/\"\n                  },\n                  \"style\": \"link\"\n                }\n              ],\n              \"paddingTop\": \"10px\"\n            }\n          ]\n        },\n        \"styles\": {\n          \"header\": {\n            \"backgroundColor\": \"#00B900\"\n          }\n        }\n      }\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        352,
+        -96
+      ],
+      "id": "e0f53a4e-cc21-46b1-8052-3dd20a25225a",
+      "name": "Flex Message"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "line-token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "line-token": {
+      "main": [
+        [
+          {
+            "node": "Flex Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "64a0b8c2-c04c-4340-968c-1d3ce34da209",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "648872ea17eaeb9fc2c4e9a3d995d20f2626232eb86abd146059edbce0d5ec77"
+  },
+  "nodeGroups": [],
+  "id": "B1fhfqR0uehqkUzT",
+  "tags": []
+}
